@@ -192,7 +192,7 @@ wurd.fetchContent = function(page, lang, cb) {
  */
 wurd.middleware = function(pages, lang) {
   return function(req, res, next) {
-    var reqLang = req.lang || lang;
+    var reqLang = req.language || req.lang || lang;
 
     wurd.load(pages, reqLang, function(err, content) {
       if (err) return next(err);

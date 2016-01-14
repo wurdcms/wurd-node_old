@@ -1,7 +1,8 @@
 var express = require('express'),
     markdown = require('marked'),
+    cookieParser = require('cookie-parser'),
     wurd = require('../../'),
-    detectLanguage = require('./detect-language');
+    requestLanguage = require('express-request-language');
 
 
 var app = module.exports = express();
@@ -10,7 +11,14 @@ var app = module.exports = express();
 app.set('views', __dirname + '/views');
 
 //Detect the chosen language
-app.use(detectLanguage(['en', 'fr', 'es']));
+app.use(cookieParser());
+app.use(requestLanguage({
+  languages: ['en', 'fr', 'es'],
+  queryName: 'lang',
+  cookie: {
+    name: 'lang'
+  }
+}));
 
 //Setup Wurd
 wurd.initialize({
