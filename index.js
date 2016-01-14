@@ -207,4 +207,34 @@ wurd.middleware = function(pages, lang) {
 }
 
 
+/**
+ * Loads a page using a name from a URL parameter
+ * This is useful for when loading shared templates and populating them with content from Wurd. E.g. site.com/:pageName
+ *
+ * @param {String} paramName        The name of the query parameter
+ * @param {String} [contentName]    The key to use when accessing content within the page. Defaults to the paramName.
+ */
+wurd.loadByParam = function(paramName, contentName) {
+  contentName = contentName || paramName;
+
+  return function(req, res, next) {
+    var page = req.params[paramName];
+      
+    wurd.middleware(page)(req, res, function(err) {
+      if (err) {
+        if (err.status === 404) return next('route');
+
+        return next(err);
+      }
+
+      res.locals.wurd = res.locals.wurd || {};
+
+      res.locals.wurd[contentName] = res.locals.wurd[page];
+
+      next();
+    });
+  }
+};
+
+
 module.exports = wurd;

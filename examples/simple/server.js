@@ -28,8 +28,8 @@ app.get('/', wurd.middleware('home'), function(req, res, next) {
   res.render('home.ejs');
 });
 
-app.get('/terms', wurd.middleware('terms'), function(req, res, next) {
-  res.render('terms.ejs');
+app.get('/:page', wurd.loadByParam('page'), function(req, res, next) {
+  res.render('text.ejs');
 });
 
 
