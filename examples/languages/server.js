@@ -1,8 +1,8 @@
 var express = require('express'),
     markdown = require('marked'),
     cookieParser = require('cookie-parser'),
-    wurd = require('../../'),
-    requestLanguage = require('express-request-language');
+    requestLanguage = require('express-request-language'),
+    wurd = require('../../');
 
 
 var app = module.exports = express();
