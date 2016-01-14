@@ -1,0 +1,11 @@
+<html>
+<body>
+
+<% for (var lang in t('langs')) { %>
+  <a href="?lang=<%= lang %>"><%= t('langs.'+lang) %></a>
+<% } %>
+
+<h1><%= t('main.title') %></h1>
+
+</body>
+</html>
