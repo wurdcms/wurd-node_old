@@ -14,10 +14,8 @@ app.set('views', __dirname + '/views');
 app.use(cookieParser());
 app.use(requestLanguage({
   languages: ['en', 'fr', 'es'],
-  queryName: 'lang',
-  cookie: {
-    name: 'lang'
-  }
+  queryName: 'language',
+  cookie: { name: 'language' }
 }));
 
 //Setup Wurd
