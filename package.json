@@ -1,6 +1,6 @@
 {
   "name": "wurd",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Wurd CMS client for Node",
   "repository": "",
   "dependencies": {
