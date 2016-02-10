@@ -35,6 +35,7 @@ app.get('/:page', wurd.loadByParam('page'), function(req, res, next) {
 
 //Start server
 if (!module.parent) {
-  app.listen(3000);
-  console.log("Express server listening on port 3000");
+  var port = process.env.PORT || 3000;
+  app.listen(port);
+  console.log("Express server listening on port %d", port);
 }
