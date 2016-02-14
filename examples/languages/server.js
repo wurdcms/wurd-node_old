@@ -12,6 +12,7 @@ app.set('views', __dirname + '/views');
 
 //Detect the chosen language
 app.use(cookieParser());
+
 app.use(requestLanguage({
   languages: ['en', 'fr', 'es'],
   queryName: 'language',

@@ -3,13 +3,14 @@
 var async = require('async');
 var superagent = require('superagent');
 var _ = require('underscore');
+var cache = require('memory-cache');
 
 var config = require('./config');
 var viewHelpers = require('./view-helpers');
 
 var _options;
 
-var cache = {};
+//var cache = {};
 
 
 var wurd = {};
@@ -62,41 +63,41 @@ wurd.load = function(pages, lang, cb) {
     pages = [pages];
   }
 
-  var result = {};
+  //Draft content - always fetch latest version from server
+  if (_options.draft) {
+    return wurd.fetchContent(pages, lang, cb);
+  }
 
-  async.each(pages, function(page, cb) {
-    //Draft content - always fetch latest version from server
-    if (_options.draft) {
-      wurd.fetchContent(page, lang, function(err, content) {
-        if (err) return cb(err);
+  //Published content - load from cache if possible
+  else {
+    var allContent = {};
+    var uncachedPages = [];
 
-        result[page] = content;
-
-        cb();
-      });
-    }
-
-    //Published content - load from cache
-    else {
-      //Load from cache
+    //Find all pages available in cache
+    pages.forEach(function(page) {
       var content = wurd.loadFromCache(page, lang);
       if (content) {
-        result[page] = content;
-        return cb();
+        console.log('FROM CACHE: '+page);
+        allContent[page] = content;
+      } else {
+        console.log('FROM SERVER: '+page);
+        uncachedPages.push(page);
       }
+    });
 
-      //Fetch from server
-      wurd.fetchContent(page, lang, function(err, content) {
+    //Fetch remaining pages from server
+    if (uncachedPages.length) {
+      wurd.fetchContent(uncachedPages, lang, function(err, content) {
         if (err) return cb(err);
 
-        result[page] = content;
+        _.extend(allContent, content);
 
-        cb();
+        return cb(null, allContent);
       });
+    } else {
+      return cb(null, allContent);
     }
-  }, function(err) {
-    cb(err, result);
-  });
+  }
 };
 
 
@@ -110,10 +111,7 @@ wurd.load = function(pages, lang, cb) {
 wurd.saveToCache = function(page, lang, content) {
   var key = page+lang;
 
-  cache[key] = {
-    time: Date.now(),
-    content: content
-  };
+  cache.put(key, content, config.maxAgeMs);
 };
 
 
@@ -129,30 +127,26 @@ wurd.saveToCache = function(page, lang, content) {
 wurd.loadFromCache = function(page, lang) {
   var key = page+lang;
 
-  var val = cache[key];
-  if (!val) return null;
-
-  var age = Date.now() - val.time;
-
-  if (age > config.maxAgeMs) {
-    wurd.fetchContent(page, lang);
-  }
-
-  return val.content;
+  return cache.get(key);
 };
 
 
 /**
  * Loads a section from the server
  *
- * @param {String} page
+ * @param {String|String[]} pages
  * @param {String} lang
- * @param {Function} cb       Callback({Error}, {Object})
+ * @param {Function} cb             Callback({Error}, {Object})
  */
-wurd.fetchContent = function(page, lang, cb) {
+wurd.fetchContent = function(pages, lang, cb) {
   //console.log(`Fetching content from server: ${page} (${lang})`);
 
-  var url = `${config.api.url}/content/${_options.app}/${page}`;
+  //Normalise string to array of strings
+  if (!Array.isArray(pages)) {
+    pages = [pages];
+  }
+
+  var url = `${config.api.url}/v2/content/${_options.app}/${pages.join(',')}`;
 
   var request = superagent.get(url);
 
@@ -164,13 +158,18 @@ wurd.fetchContent = function(page, lang, cb) {
     request.query({ lang: lang });
   }
 
+  console.log('fetching', request.url, request.qs);
+
   request.end(function(err, res) {
     if (err) return cb(err);
 
     if (res.ok) {
       var content = res.body;
 
-      wurd.saveToCache(page, lang, content);
+      //Save pages to cache
+      _.each(content, function(pageContent, pageName) {
+        wurd.saveToCache(pageName, lang, pageContent);
+      });
 
       if (cb) cb(null, content);
     } else {
