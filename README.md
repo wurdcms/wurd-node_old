@@ -1,5 +1,5 @@
 # wurd-node
-Wurd client for Node.
+Wurd CMS client for Node.
 Includes Express middleware and view helpers.
 
 ## Install

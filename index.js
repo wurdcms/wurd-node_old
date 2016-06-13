@@ -77,10 +77,10 @@ wurd.load = function(pages, lang, cb) {
     pages.forEach(function(page) {
       var content = wurd.loadFromCache(page, lang);
       if (content) {
-        console.log('FROM CACHE: '+page);
+        //console.log('FROM CACHE: '+page);
         allContent[page] = content;
       } else {
-        console.log('FROM SERVER: '+page);
+        //console.log('FROM SERVER: '+page);
         uncachedPages.push(page);
       }
     });
@@ -158,7 +158,7 @@ wurd.fetchContent = function(pages, lang, cb) {
     request.query({ lang: lang });
   }
 
-  console.log('fetching', request.url, request.qs);
+  //console.log('fetching', request.url, request.qs);
 
   request.end(function(err, res) {
     if (err) return cb(err);

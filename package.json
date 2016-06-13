@@ -1,7 +1,7 @@
 {
   "name": "wurd",
-  "version": "0.1.2",
-  "description": "Wurd CMS client for Node",
+  "version": "0.3.0",
+  "description": "Wurd CMS client",
   "repository": "",
   "dependencies": {
     "async": "^0.9.0",
@@ -19,5 +19,9 @@
     "marked": "^0.3.5",
     "node-dev": "^2.7.1"
   },
-  "author": "Charles Davison"
+  "author": "Charles Davison",
+  "scripts": {
+    "example_languages": "node examples/languages/server.js",
+    "example_simple": "node examples/simple/server.js"
+  }
 }
