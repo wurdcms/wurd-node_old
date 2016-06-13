@@ -1,6 +1,6 @@
 var express = require('express'),
     markdown = require('marked'),
-    wurd = require('../../');
+    Wurd = require('../../');
 
 
 var app = module.exports = express();
@@ -8,9 +8,8 @@ var app = module.exports = express();
 //Setup app
 app.set('views', __dirname + '/views');
 
-//Setup Wurd
-wurd.initialize({
-  app: 'wurd-example-simple',
+//Setup Wurd instance
+var wurd = new Wurd('wurd-example-simple', {
   draft: (process.env.NODE_ENV === 'development')
 });
 
