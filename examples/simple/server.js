@@ -9,9 +9,11 @@ var app = module.exports = express();
 app.set('views', __dirname + '/views');
 
 //Setup Wurd instance
-var wurd = new Wurd('wurd-example-simple', {
+/*var wurd = new Wurd('wurd-example-simple', {
   draft: (process.env.NODE_ENV === 'development')
-});
+});*/
+var wurd = Wurd.connect('wurd-example-simple');
+
 
 //Make the helper function available to the view
 app.locals = {

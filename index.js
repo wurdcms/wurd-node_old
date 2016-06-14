@@ -14,10 +14,21 @@ var viewHelpers = require('./view-helpers');
 
 class Wurd {
   /**
+   * Convenience method for creating and returning a new Wurd instance
+   * @param {String} app
+   * @param {Object} [options]            See constructor options
+   */
+  static connect(app, options) {
+    return new Wurd(app, options);
+  }
+
+
+  /**
    * @param {String} app
    * @param {Object} [options]
-   * @param {String} [options.lang]       Language name e.g. 'default', 'en', 'fr' etc.
-   * @param {Boolean} [options.draft]     Whether to load draft content. Defaults to false, so published content is returned.
+   * @param {String} [options.lang]               Language name e.g. 'default', 'en', 'fr' etc.
+   * @param {Boolean} [options.draft]             Whether to load draft content. Defaults to false, so published content is returned.
+   * @param {String|String[]} [options.preload]   Pages to load automatically
    */
   constructor(app, options) {
     this.app = app;
@@ -29,8 +40,8 @@ class Wurd {
     }, options);
 
     //Preload content
-    if (options.preload) {
-      this.load(options.preload, (err, result) => {
+    if (this.options.preload) {
+      this.load(this.options.preload, (err, result) => {
         if (err) return console.error('Error preloading Wurd content: ', err);
       });
     }
@@ -48,7 +59,7 @@ class Wurd {
    * @param {String} [options.lang]         Language name e.g. 'default', 'en', 'fr' etc.
    * @param {Boolean} [options.draft]       Whether to load draft content. Defaults to false, so published content is returned.
    * 
-   * @param {Function} cb                   Callback({Error} err, {Object} res)
+   * @param {Function} cb                   Callback({Error} err, {Object} content)
    */
   load(pages, options, cb) {
     //Normalise arguments
@@ -79,10 +90,10 @@ class Wurd {
       pages.forEach(page => {
         var content = this._loadFromCache(page, options.lang);
         if (content) {
-          console.log('FROM CACHE: '+page);
+          //console.log('FROM CACHE: '+page);
           allContent[page] = content;
         } else {
-          console.log('FROM SERVER: '+page);
+          //console.log('FROM SERVER: '+page);
           uncachedPages.push(page);
         }
       });
