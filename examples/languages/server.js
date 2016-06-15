@@ -2,7 +2,7 @@ var express = require('express'),
     markdown = require('marked'),
     cookieParser = require('cookie-parser'),
     requestLanguage = require('express-request-language'),
-    wurd = require('../../');
+    Wurd = require('../../');
 
 
 var app = module.exports = express();
@@ -19,9 +19,9 @@ app.use(requestLanguage({
   cookie: { name: 'language' }
 }));
 
-//Setup Wurd
-wurd.initialize({
-  app: 'wurd-example-languages',
+
+//Setup Wurd instance
+var wurd = new Wurd('wurd-example-languages', {
   draft: (process.env.NODE_ENV === 'development')
 });
 
@@ -32,7 +32,7 @@ app.locals = {
 }
 
 //Routes
-app.get('/', wurd.middleware(['langs', 'main']), function(req, res, next) {
+app.get('/', wurd.middleware(['langs', 'main'], { lang: 'en' }), function(req, res, next) {
   res.render('main.ejs');
 });
 
