@@ -5,10 +5,13 @@
 <body>
 
 <h1><%= t('home.title') %></h1>
-<p><%= t('home.intro') %></p>
+<p><%- markdown(t('home.intro')) %></p>
 
 <footer>
-  <a href="/terms">Terms and conditions</a>
+  <ul>
+    <li><a href="/terms">Terms and conditions</a></li>
+    <li><a href="/privacy">Privacy Policy</a></li>
+  </ul>
 </footer>
 
 </body>

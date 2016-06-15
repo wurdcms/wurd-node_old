@@ -4,7 +4,6 @@
   "description": "Wurd CMS client",
   "repository": "",
   "dependencies": {
-    "async": "^0.9.0",
     "get-property-value": "^1.1.0",
     "memory-cache": "^0.1.4",
     "superagent": "^0.21.0",

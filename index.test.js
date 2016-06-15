@@ -321,5 +321,227 @@ describe('wurd-node', function() {
       });
     });
   });
+
+
+  describe('#middleware()', function() {
+    var wurd;
+    var req, res;
+
+    beforeEach(function() {
+      wurd = new Wurd('foo');
+
+      req = {};
+      res = {};
+
+      this.sinon.stub(wurd, 'load').yields(null, {});
+    });
+
+    it('returns a Connect/Express middleware function', function(done) {
+      var fn = wurd.middleware('page1');
+
+      fn(req, res, function(err) {
+        if (err) return done(err);
+
+        test.deepEqual(res.locals, {
+          wurd: {}
+        });
+
+        done();
+      });
+    });
+
+    describe('the middleware', function() {
+      it('loads content onto the response', function(done) {
+        wurd.load.withArgs('page1').yields(null, {
+          page1: { a: 'A' }
+        });
+
+        var fn = wurd.middleware('page1');
+
+        fn(req, res, function(err) {
+          if (err) return done(err);
+          
+          test.deepEqual(res.locals, {
+            wurd: {
+              page1: { a: 'A' }
+            }
+          });
+
+          done();
+        });
+      });
+
+      describe('with languages', function() {
+        it('first checks for "language" on the request', function(done) {
+          req.language = 'fr';
+
+          var fn = wurd.middleware('foo');
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+            
+            same(wurd.load.args[0][1].lang, 'fr');
+
+            done();
+          });
+        });
+
+        it('then checks options.lang', function(done) {
+          wurd.options.lang = 'en';
+
+          var fn = wurd.middleware('foo', { lang: 'de' });
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+            
+            same(wurd.load.args[0][1].lang, 'de');
+
+            done();
+          });
+        });
+
+        it('then falls back to client lang setting', function(done) {
+          wurd.options.lang = 'pt';
+
+          var fn = wurd.middleware('foo');
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+            
+            same(wurd.load.args[0][1].lang, 'pt');
+
+            done();
+          });
+        });
+      });
+    });
+  });
+
+
+  describe('#loadByParam', function() {
+    var wurd;
+    var req, res;
+
+    beforeEach(function() {
+      wurd = new Wurd('foo');
+
+      req = {
+        params: {}
+      };
+
+      res = {};
+
+      this.sinon.stub(wurd, 'load').yields(null, {});
+    });
+
+    it('returns a Connect/Express middleware function', function(done) {
+      var fn = wurd.loadByParam('page');
+
+      fn(req, res, function(err) {
+        if (err) return done(err);
+
+        test.ok(res.locals.wurd);
+
+        done();
+      });
+    });
+
+    
+    describe('the middleware', function() {
+      it('loads the content onto the response, using the parameter value as page name', function(done) {
+        req.params.page = 'foo';
+
+        wurd.load.withArgs('foo').yields(null, {
+          foo: { a: 'A' }
+        });
+
+        var fn = wurd.loadByParam('page');
+
+        fn(req, res, function(err) {
+          if (err) return done(err);
+          
+          test.deepEqual(res.locals, {
+            wurd: {
+              page: { a: 'A' }
+            }
+          });
+
+          done();
+        });
+      });
+
+      describe('with languages', function() {
+        it('first checks for "language" on the request', function(done) {
+          req.params.page = 'foo';
+          req.language = 'fr';
+
+          var fn = wurd.loadByParam('page');
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+            
+            same(wurd.load.args[0][1].lang, 'fr');
+
+            done();
+          });
+        });
+
+        it('then checks options.lang', function(done) {
+          req.params.page = 'foo';
+          wurd.options.lang = 'en';
+
+          var fn = wurd.loadByParam('page', { lang: 'de' });
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+            
+            same(wurd.load.args[0][1].lang, 'de');
+
+            done();
+          });
+        });
+
+        it('then falls back to client lang setting', function(done) {
+          req.params.page = 'foo';
+          wurd.options.lang = 'pt';
+
+          var fn = wurd.loadByParam('page');
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+            
+            same(wurd.load.args[0][1].lang, 'pt');
+
+            done();
+          });
+        });
+      });
+
+
+      describe('with "contentName" option', function() {
+        it('uses the contentName value as the key in the response locals', function(done) {
+          req.params.page = 'foo';
+
+          wurd.load.withArgs('foo').yields(null, {
+            foo: { a: 'A' }
+          });
+
+          var fn = wurd.loadByParam('page', { contentName: 'xyz' });
+
+          fn(req, res, function(err) {
+            if (err) return done(err);
+
+            test.deepEqual(res.locals, {
+              wurd: {
+                xyz: { a: 'A' }
+              }
+            });
+
+            done();
+          });
+        });
+      });
+    });
+  });
   
 });
