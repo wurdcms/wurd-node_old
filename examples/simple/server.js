@@ -10,6 +10,7 @@ app.set('views', __dirname + '/views');
 
 //Setup Wurd instance
 var wurd = Wurd.connect('wurd-example-simple', {
+  //In draft mode changes are reflected instantly, without publishing
   draft: (process.env.NODE_ENV === 'development')
 });
 
@@ -24,10 +25,12 @@ app.locals = {
 app.use(wurd.middleware('common'));
 
 //Routes
+//Load a specific page's content
 app.get('/', wurd.middleware('home'), function(req, res, next) {
   res.render('home.ejs');
 });
 
+//With a shared template we can load page content dynamically based on the page name
 app.get('/:page', wurd.loadByParam('page'), function(req, res, next) {
   res.render('text.ejs');
 });

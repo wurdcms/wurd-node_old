@@ -13,6 +13,7 @@ app.set('views', __dirname + '/views');
 //Detect the chosen language
 app.use(cookieParser());
 
+//Detect the user's preferred language
 app.use(requestLanguage({
   languages: ['en', 'fr', 'es'],
   queryName: 'language',
@@ -22,6 +23,7 @@ app.use(requestLanguage({
 
 //Setup Wurd instance
 var wurd = new Wurd('wurd-example-languages', {
+  //In draft mode changes are reflected instantly, without publishing
   draft: (process.env.NODE_ENV === 'development')
 });
 
@@ -32,7 +34,8 @@ app.locals = {
 }
 
 //Routes
-app.get('/', wurd.middleware(['langs', 'main'], { lang: 'en' }), function(req, res, next) {
+//Load content for the page
+app.get('/', wurd.middleware(['langs', 'main']), function(req, res, next) {
   res.render('main.ejs');
 });
 
