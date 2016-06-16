@@ -41,9 +41,6 @@ var wurd = require('wurd').connect('myapp', {
 
 var app = module.exports = express();
 
-//Setup app
-app.set('views', __dirname + '/views');
-
 //Make the helper function available to the view
 app.locals = {
   t: wurd.t
