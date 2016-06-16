@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wurdcms/wurd-node.svg?branch=master)](https://travis-ci.org/wurdcms/wurd-node)
+
 # wurd-node
 Wurd CMS client for Node.
 Includes Express middleware and view helpers.
