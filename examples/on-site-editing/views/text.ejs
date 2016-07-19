@@ -1,0 +1,15 @@
+<html>
+<head>
+<title><%= `${t('page.title')} - ${t('common.title')}` %></title>
+</head>
+<body>
+  <h1 data-wurd="<%= page %>.title"><%= t('page.title') %></h1>
+
+  <div data-wurd-md="<%= page %>.text"><%- markdown(t('page.text')) %></div>
+
+  <!-- Script to enable inline editing -->
+  <script src="https://edit.wurd.io/edit.js"
+    data-app="wurd-example-simple"
+  ></script>
+</body>
+</html>

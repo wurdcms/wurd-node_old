@@ -27,7 +27,8 @@
   "scripts": {
     "test": "NODE_ENV=test node_modules/.bin/mocha --recursive *.test.js --reporter dot",
     "example_languages": "node examples/languages/server.js",
-    "example_simple": "node examples/simple/server.js"
+    "example_simple": "node examples/simple/server.js",
+    "example_on-site-editing": "node examples/on-site-editing/server.js"
   },
   "engines": {
     "node": ">= 4.2.2"

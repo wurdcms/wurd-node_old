@@ -1,0 +1,23 @@
+<html>
+<head>
+  <title><%= t('common.title') %></title>
+</head>
+<body>
+
+<h1 data-wurd="home.title"><%= t('home.title') %></h1>
+<div data-wurd-md="home.intro"><%- markdown(t('home.intro')) %></div>
+
+<footer>
+  <ul>
+    <li><a href="/terms">Terms and conditions</a></li>
+    <li><a href="/privacy">Privacy Policy</a></li>
+  </ul>
+</footer>
+
+<!-- Script to enable inline editing -->
+<script src="https://edit.wurd.io/edit.js"
+  data-app="wurd-example-simple"
+></script>
+
+</body>
+</html>
